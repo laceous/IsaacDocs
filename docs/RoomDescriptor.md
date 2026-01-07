@@ -112,6 +112,27 @@ ___
 
 ???- note "Notes"
     ![Room Grid indices](images/infographics/RoomGridIndices.png)
+
+???- example "Get dimension example code"
+    A grid index exists within 1 of 3 dimensions in the game. Repentogon provides a GetDimension method, but if you don't have access to that then you can use the following function to find the room descriptor's dimension.
+
+    ```lua
+    -- requirements: a room that actually exists on the map, or one of the game's special rooms that exist outside the map
+    local function getDimension(roomDesc)
+      -- 0: main dimension
+      -- 1: secondary dimension, used by downpour mirror dimension and mines escape sequence
+      -- 2: death certificate dimension
+      for i = 0, 2 do
+        if GetPtrHash(roomDesc) == GetPtrHash(Game():GetLevel():GetRoomByIdx(roomDesc.SafeGridIndex, i)) then
+          return i
+        end
+      end
+      return -1
+    end
+
+    getDimension(Game():GetLevel():GetCurrentRoomDesc()) -- returns 0, 1, or 2 depending on where you're at
+    getDimension(Game():GetLevel():GetRoomByIdx(GridRooms.ROOM_DEVIL_IDX)) -- special rooms outside the map return 0
+    ```
 ___
 ### Has·Water {: aria-label='Variables' }
 [ ](#){: .alldlc .tooltip .badge }
